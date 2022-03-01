@@ -30,9 +30,11 @@ public void setMines()
     int r, c;
     r = (int)(Math.random()* NUM_ROWS)+1;
     c = (int)(Math.random()* NUM_COLS)+1;
-    if(mines.contains(buttons[r][c]) == false){
+    //contain only works with arraylist and strings
+    if(!mines.contains(buttons[r][c])){
       mines.add(buttons[r][c]);
     }
+    System.out.println(mines);
 }
 
 public void draw ()
@@ -65,13 +67,13 @@ public int countMines(int row, int col)
 {
     int numMines = 0;
     //STEP #12
-      /* alternate solution using nested loops
-  for(int r = row-1;r<=row+1;r++)
-    for(int c = col-1; c<=col+1;c++)
-      if(isValidOn5by5(r,c) && grid[r][c]==true)
-        count++;
-  if(grid[row][col]==true)
-    count--;*/
+      //alternate solution using nested loops
+    for(int r = row-1;r<=row+1;r++)
+      for(int c = col-1; c<=col+1;c++)
+        if(isValidOn5by5(r,c) && grid[r][c]==true)
+          count++;
+    if(grid[row][col]==true)
+      count--;
     return numMines;
 }
 public class MSButton

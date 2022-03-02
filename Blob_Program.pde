@@ -49,6 +49,9 @@ public class Blob
     //your code here
     //if position to left is valid and marked
     //call mousePressed for the blob on left
+    if(blobs[r][c-1].isValid(r, c-1) == true && blobs[r][c-1].isMarked() == true){
+      blobs[r][c-1].mousePressed();
+    }
   }
   public void draw () 
   {    

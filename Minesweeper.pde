@@ -27,6 +27,8 @@ void setup ()
 public void setMines()
 {
     //STEP #9
+    //Add multiple?? 
+    //with while(mines.size() < NUM_MINES)
     int r, c;
     r = (int)(Math.random()* NUM_ROWS)+1;
     c = (int)(Math.random()* NUM_COLS)+1;
@@ -67,13 +69,12 @@ public int countMines(int row, int col)
 {
     int numMines = 0;
     //STEP #12
-      //alternate solution using nested loops
     for(int r = row-1;r<=row+1;r++)
       for(int c = col-1; c<=col+1;c++)
-        if(isValidOn5by5(r,c) && grid[r][c]==true)
-          count++;
-    if(grid[row][col]==true)
-      count--;
+        if(isValid(r,c) && buttons[r][c].isFlagged()==true)
+          numMines++;
+    if(buttons[row][col].isFlagged()==true)
+      numMines--;
     return numMines;
 }
 public class MSButton
@@ -100,8 +101,38 @@ public class MSButton
     public void mousePressed () 
     {
         clicked = true;
-        //your code here
-    }
+        //STEP #13
+        int r = myRow;
+        int c = myCol;
+        
+        if(mouseButton == RIGHT){
+          if(buttons[r][c].flagged == true){
+            buttons[r][c].flagged = false;
+            clicked = false;
+          }else{
+            buttons[r][c].flagged = true;
+          }
+        }else if(mines.contains(this)){
+          displayLosingMessage(); 
+        }else if(countMines(r,c) > 0){
+          setLabel(countMines(r,c));
+        }else{
+          //have to call all 8
+          buttons[r-1][c-1].mousePressed();
+          buttons[r-1][c].mousePressed();
+          buttons[r-1][c+1].mousePressed();
+          
+          buttons[r][c-1].mousePressed();
+          buttons[r][c+1].mousePressed();
+          
+          buttons[r+1][c-1].mousePressed();
+          buttons[r+1][c].mousePressed();
+          buttons[r+1][c+1].mousePressed();
+        }
+        
+        //recursion to go all directions
+        //chekc if valid first and unclicked??
+ 
     public void draw () 
     {    
         if (flagged)

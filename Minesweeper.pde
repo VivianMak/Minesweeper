@@ -68,7 +68,7 @@ public void displayWinningMessage()
 public boolean isValid(int r, int c)
 {
     //STEP #11
-    if(r >= 0 && r < 5 && c >= 0 && c < 5)
+    if(r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS)
       return true;
     return false;
 }
@@ -84,6 +84,7 @@ public int countMines(int row, int col)
       numMines--;
     return numMines;
 }
+
 public class MSButton
 {
     private int myRow, myCol;
@@ -122,14 +123,18 @@ public class MSButton
         }else if(mines.contains(this)){
           displayLosingMessage(); 
         }else if(countMines(r,c) > 0){
-          setLabel(countMines(r,c));
+          buttons[r][c].setLabel(countMines(r,c));
         }else{
           //have to call all 8
-          for(int r = row-1;r<=row+1;r++)
-            for(int c = col-1; c<=col+1;c++)
-              if(isValid(r,c) && buttons[r][c].isFlagged()==true)
-                buttons[r][c].mousePressed();
+          for(int row = r-1;row<=r+1;row++){
+            for(int col = c-1; col<=c+1;col++){
+              if(isValid(row,col) && buttons[row][col].isFlagged()==true){
+                buttons[row][col].mousePressed();
+              }
+            }
+          }
         }
+    } //END public void mousePressed()
         /*
         if(buttons[row][col].isFlagged()==true)
           numMines--;

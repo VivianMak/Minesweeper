@@ -47,16 +47,23 @@ public void draw ()
 }
 public boolean isWon()
 {
-    //your code here
+    int numMines = 0;
+    for(int i = 0; i < mines.size(); i++){
+      if(mines.get(i).isFlagged() == true)
+        numMines++;
+    }
+    if(numMines == mines.size())
+      return true;
     return false;
 }
 public void displayLosingMessage()
 {
     //your code here
+    buttons[0][0].setLabel("L");
 }
 public void displayWinningMessage()
 {
-    //your code here
+    buttons[0][0].setLabel("W");
 }
 public boolean isValid(int r, int c)
 {
@@ -118,20 +125,32 @@ public class MSButton
           setLabel(countMines(r,c));
         }else{
           //have to call all 8
-          buttons[r-1][c-1].mousePressed();
-          buttons[r-1][c].mousePressed();
-          buttons[r-1][c+1].mousePressed();
-          
-          buttons[r][c-1].mousePressed();
-          buttons[r][c+1].mousePressed();
-          
-          buttons[r+1][c-1].mousePressed();
-          buttons[r+1][c].mousePressed();
-          buttons[r+1][c+1].mousePressed();
+          for(int r = row-1;r<=row+1;r++)
+            for(int c = col-1; c<=col+1;c++)
+              if(isValid(r,c) && buttons[r][c].isFlagged()==true)
+                buttons[r][c].mousePressed();
         }
-        
-        //recursion to go all directions
-        //chekc if valid first and unclicked??
+        /*
+        if(buttons[row][col].isFlagged()==true)
+          numMines--;
+              buttons[r-1][c-1].mousePressed();
+              buttons[r-1][c].mousePressed();
+              buttons[r-1][c+1].mousePressed();
+              
+              buttons[r][c-1].mousePressed();
+              buttons[r][c+1].mousePressed();
+              
+              buttons[r+1][c-1].mousePressed();
+              buttons[r+1][c].mousePressed();
+              buttons[r+1][c+1].mousePressed();
+          
+              if(blobs[r][c-1].isValid(r, c-1) == true && blobs[r][c-1].isMarked() == true){
+                blobs[r][c-1].mousePressed();
+            
+            
+            ->recursion to go all directions
+            ->chekc if valid first and unclicked??
+        */
  
     public void draw () 
     {    
@@ -148,6 +167,7 @@ public class MSButton
         fill(0);
         text(myLabel,x+width/2,y+height/2);
     }
+    
     public void setLabel(String newLabel)
     {
         myLabel = newLabel;

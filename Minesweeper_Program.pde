@@ -33,6 +33,7 @@ public void setMines()  //STEP #9
       //contains() only works with arraylist and strings
       if(!mines.contains(buttons[r][c])){
         mines.add(buttons[r][c]);
+        System.out.println(r + " , " + c);
       }
     }
     //System.out.println(mines);
@@ -109,41 +110,42 @@ public class MSButton
     public void mousePressed ()  //STEP #13
     {
         clicked = true;
-
-        int r = myRow;
-        int c = myCol;
         
         if(mouseButton == RIGHT){
-          buttons[r][c].flagged = !buttons[r][c].flagged;
-          if(buttons[r][c].flagged == false)
+          buttons[myRow][myCol].flagged = !buttons[myRow][myCol].flagged;
+          if(buttons[myRow][myCol].flagged == false)
             {clicked = false;}
         }
         else if(mines.contains(this)){
           displayLosingMessage(); 
         }
-        else if(countMines(r,c) > 0){
-          buttons[r][c].setLabel(str(countMines(r,c)));
+        else if(countMines(myRow,myCol) > 0){
+          buttons[myRow][myCol].setLabelNumber(countMines(myRow,myCol));
         }
         else{
-          //have to call all 8 --  ://
-          if(isValid(r-1,c-1) && buttons[r-1][c-1].clicked == false)
-            buttons[r-1][c-1].mousePressed();
-          if(isValid(r-1,c) && buttons[r-1][c].clicked == false)
-            buttons[r-1][c].mousePressed();
-          if(isValid(r-1,c+1) && buttons[r-1][c+1].clicked == false)
-            buttons[r-1][c+1].mousePressed();
+          for (int r = NUM_ROWS-1; r<=NUM_ROWS+1; r++)
+            for (int c = NUM_COLS-1; c<=NUM_COLS+1; c++)
+              if (isValid(r, c) == true && buttons[r][c].isFlagged() == true)
+                buttons[r][c].mousePressed();
+          //have to call all 8
+          //if(isValid(r-1,c-1) && buttons[r-1][c-1].clicked == false)
+          //  buttons[r-1][c-1].mousePressed();
+          //if(isValid(r-1,c) && buttons[r-1][c].clicked == false)
+          //  buttons[r-1][c].mousePressed();
+          //if(isValid(r-1,c+1) && buttons[r-1][c+1].clicked == false)
+          //  buttons[r-1][c+1].mousePressed();
             
-          if(isValid(r,c-1) && buttons[r][c-1].clicked == false)
-            buttons[r][c-1].mousePressed();
-          if(isValid(r,c-1) && buttons[r][c-1].clicked == false)
-            buttons[r][c+1].mousePressed();
+          //if(isValid(r,c-1) && buttons[r][c-1].clicked == false)
+          //  buttons[r][c-1].mousePressed();
+          //if(isValid(r,c-1) && buttons[r][c-1].clicked == false)
+          //  buttons[r][c+1].mousePressed();
             
-          if(isValid(r+1,c-1) && buttons[r-1][c-1].clicked == false)
-            buttons[r+1][c-1].mousePressed();
-          if(isValid(r+1,c) && buttons[r-1][c].clicked == false)
-            buttons[r+1][c].mousePressed();
-          if(isValid(r+1,c+1) && buttons[r-1][c+1].clicked == false)
-            buttons[r+1][c+1].mousePressed();
+          //if(isValid(r+1,c-1) && buttons[r-1][c-1].clicked == false)
+          //  buttons[r+1][c-1].mousePressed();
+          //if(isValid(r+1,c) && buttons[r-1][c].clicked == false)
+          //  buttons[r+1][c].mousePressed();
+          //if(isValid(r+1,c+1) && buttons[r-1][c+1].clicked == false)
+          //  buttons[r+1][c+1].mousePressed();
             
           //if(isValid(r-1,c-1) && buttons[r-1][c-1].isFlagged() == true)
           //  buttons[r-1][c-1].mousePressed();
@@ -203,7 +205,7 @@ public class MSButton
     {
         myLabel = newLabel;
     }
-    public void setLabel(int newLabel)
+    public void setLabelNumber(int newLabel)
     {
         myLabel = ""+ newLabel;
     }

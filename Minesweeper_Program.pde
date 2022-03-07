@@ -125,7 +125,7 @@ public class MSButton
           buttons[r][c].setLabel(str(countMines(r,c)));
         }
         else{
-          //have to call all 8
+          //have to call all 8 --  ://
           if(isValid(r-1,c-1) && buttons[r-1][c-1].clicked == false)
             buttons[r-1][c-1].mousePressed();
           if(isValid(r-1,c) && buttons[r-1][c].clicked == false)

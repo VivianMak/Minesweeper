@@ -57,7 +57,8 @@ public boolean isWon()  //STEP #14
     }
     if(numMinesFlagged == mines.size())
       nMines = true;
-    
+    return nMines;
+    /*
     // ALL NON-MINES ARE CLICKED
     for(int r = 0; r < NUM_ROWS; r++){
       for(int c = 0; c < NUM_COLS; c++){
@@ -68,23 +69,29 @@ public boolean isWon()  //STEP #14
       }
     }
     return nonMines && nMines;
+    */
 } //end boolean isWon()
 
 public void displayLosingMessage()  //STEP #16
 {
-    buttons[0][0].setLabel("L");
+    buttons[0][NUM_COLS/2 - 1].setLabel("L");
+    buttons[0][NUM_COLS/2].setLabel("o");
+    buttons[0][NUM_COLS/2 + 1].setLabel("S");
+    buttons[0][NUM_COLS/2 + 2].setLabel("e");
     
-    //SHOW ALL MINES - flag IF !flage
-    for(int i = 0; i < mines.size(); i++){
-        if(mines.get(i).flagged == false){
-          mines.get(i).flagged = true;
-        }
-    }
+    //SHOW ALL MINES - flag IF !flag ????
+    //for(int i = 0; i < mines.size(); i++){
+    //    if(mines.get(i).flagged == false){
+    //      mines.get(i).flagged = true;
+    //    }
+    //}
 } // end void displayLosingMessage()
 
 public void displayWinningMessage()  //STEP #15
 {
-    buttons[0][0].setLabel("W");
+    buttons[0][NUM_COLS/2 - 1].setLabel("W");
+    buttons[0][NUM_COLS/2].setLabel("i");
+    buttons[0][NUM_COLS/2 + 1].setLabel("N");
 }
 
 public boolean isValid(int r, int c)  //STEP #11
@@ -163,10 +170,9 @@ public class MSButton
   public void draw () 
   {    
       if (flagged)
-        fill(74, 74, 67);
-        //fill(200);
-       else if(clicked && mines.contains(this)) 
-         fill(255,0,0);
+        fill(255,0,0);
+       else if(clicked == true && mines.contains(this)) 
+         fill(74, 74, 67);
       else if(clicked)
         fill(130, 112, 70);
       else 

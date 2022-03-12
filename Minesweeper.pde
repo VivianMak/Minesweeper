@@ -1,11 +1,11 @@
 import de.bezier.guido.*;
-//Declare and initialize constants NUM_ROWS and NUM_COLS = 20
-public final static int NUM_ROWS = 5;
-public final static int NUM_COLS = 5;
+public final static int NUM_ROWS = 10;
+public final static int NUM_COLS = 10;
+public final static int NUM_MINES = 8;
 private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+private ArrayList <MSButton> mines = new ArrayList <MSButton>(); 
 
-void setup ()
+void setup ()  //STEP #5
 {
     size(400, 400);
     textAlign(CENTER,CENTER);
@@ -20,169 +20,196 @@ void setup ()
         buttons[r][c] = new MSButton(r, c);
       }
     }
-    
-    
     setMines();
-}
-public void setMines()
+} //end void setup()
+
+public void setMines()  //STEP #9
 {
-    //STEP #9
-    //Add multiple?? 
-    //with while(mines.size() < NUM_MINES)
-    int r, c;
-    r = (int)(Math.random()* NUM_ROWS)+1;
-    c = (int)(Math.random()* NUM_COLS)+1;
-    //contain only works with arraylist and strings
-    if(!mines.contains(buttons[r][c])){
-      mines.add(buttons[r][c]);
+   int rRand, cRand;
+    for(int i = 0; i < NUM_MINES; i++){
+      rRand = (int)(Math.random()* NUM_ROWS);
+      cRand = (int)(Math.random()* NUM_COLS);
+      //contains() only works with arraylist and strings
+      if(!mines.contains(buttons[rRand][cRand])){
+        mines.add(buttons[rRand][cRand]);
+      }
+    System.out.println(rRand + " , " + cRand);
     }
-    System.out.println(mines);
-}
+} //end void setMines()
 
 public void draw ()
 {
     background( 0 );
     if(isWon() == true)
-        displayWinningMessage();
-}
-public boolean isWon()
+      displayWinningMessage();
+}  //end void draw()
+
+public boolean isWon()  //STEP #14
 {
-    int numMines = 0;
+    boolean nMines = false;
+    boolean nonMines = false;
+    
+    // ALL MINES ARE FLAGGED
+    int numMinesFlagged = 0;
     for(int i = 0; i < mines.size(); i++){
-      if(mines.get(i).isFlagged() == true)
-        numMines++;
+      if(mines.get(i).flagged == true)
+        numMinesFlagged++;
     }
-    if(numMines == mines.size())
-      return true;
-    return false;
-}
-public void displayLosingMessage()
+    if(numMinesFlagged == mines.size())
+      nMines = true;
+    
+    // ALL NON-MINES ARE CLICKED
+    for(int r = 0; r < NUM_ROWS; r++){
+      for(int c = 0; c < NUM_COLS; c++){
+        if(!mines.contains(buttons[r][c]) && 
+            buttons[r][c].clicked ==true){
+          nonMines = true;
+        }
+      }
+    }
+    return nonMines && nMines;
+} //end boolean isWon()
+
+public void displayLosingMessage()  //STEP #16
 {
-    //your code here
     buttons[0][0].setLabel("L");
-}
-public void displayWinningMessage()
+    
+    //SHOW ALL MINES - flag IF !flage
+    for(int i = 0; i < mines.size(); i++){
+        if(mines.get(i).flagged == false){
+          mines.get(i).flagged = true;
+        }
+    }
+} // end void displayLosingMessage()
+
+public void displayWinningMessage()  //STEP #15
 {
     buttons[0][0].setLabel("W");
 }
-public boolean isValid(int r, int c)
+
+public boolean isValid(int r, int c)  //STEP #11
 {
-    //STEP #11
     if(r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS)
       return true;
     return false;
 }
-public int countMines(int row, int col)
+
+public int countMines(int row, int col)  //STEP #12
 {
     int numMines = 0;
-    //STEP #12
-    for(int r = row-1;r<=row+1;r++)
-      for(int c = col-1; c<=col+1;c++)
-        if(isValid(r,c) && buttons[r][c].isFlagged()==true)
+    for(int r = row-1; r<=row+1; r++){
+      for(int c = col-1; c<=col+1; c++){
+        if(mines.contains(buttons[row][col]) == true){
+          numMines--;
+        }
+        if(isValid(r,c) == true && 
+            mines.contains(buttons[r][c]) == true){
           numMines++;
-    if(buttons[row][col].isFlagged()==true)
-      numMines--;
-    return numMines;
-}
+        }
+      }
+    }
+     return numMines;
+} // end int countMines()
 
 public class MSButton
 {
-    private int myRow, myCol;
-    private float x,y, width, height;
-    private boolean clicked, flagged;
-    private String myLabel;
-    
-    public MSButton ( int row, int col )
-    {
-         width = 400/NUM_COLS;
-         height = 400/NUM_ROWS;
-        myRow = row;
-        myCol = col; 
-        x = myCol*width;
-        y = myRow*height;
-        myLabel = "";
-        flagged = clicked = false;
-        Interactive.add( this ); // register it with the manager
-    }
+  private int myRow, myCol;
+  private float x,y, width, height;
+  private boolean clicked, flagged;
+  private String myLabel;
+  
+  public MSButton ( int row, int col )
+  {
+       width = 400/NUM_COLS;
+       height = 400/NUM_ROWS;
+      myRow = row;
+      myCol = col; 
+      x = myCol*width;
+      y = myRow*height;
+      myLabel = "";
+      flagged = clicked = false;
+      Interactive.add( this ); // register it with the manager
+  }
 
-    // called by manager
-    public void mousePressed () 
-    {
-        clicked = true;
-        //STEP #13
-        int r = myRow;
-        int c = myCol;
-        
-        if(mouseButton == RIGHT){
-          if(buttons[r][c].flagged == true){
-            buttons[r][c].flagged = false;
-            clicked = false;
-          }else{
-            buttons[r][c].flagged = true;
-          }
-        }else if(mines.contains(this)){
-          displayLosingMessage(); 
-        }else if(countMines(r,c) > 0){
-          buttons[r][c].setLabel(countMines(r,c));
-        }else{
-          //have to call all 8
-          for(int row = r-1;row<=r+1;row++){
-            for(int col = c-1; col<=c+1;col++){
-              if(isValid(row,col) && buttons[row][col].isFlagged()==true){
-                buttons[row][col].mousePressed();
-              }
+  // called by manager
+  public void mousePressed ()  //STEP #13
+  {
+      clicked = true;
+      
+      if(mouseButton == RIGHT)
+      {
+        flagged = !flagged;
+        if(flagged == false){
+           clicked = false;
+         }
+      }
+      else if(mines.contains(this)){
+        displayLosingMessage(); 
+      }
+      else if(countMines(myRow,myCol) > 0){
+        setLabel(countMines(myRow,myCol));
+      }
+      else{
+        for(int r = myRow-1; r < myRow+1; r++){
+          for(int c = myCol-1; c < myCol+1; c++){
+            if(isValid(r,c) && buttons[r][c].clicked == false){
+              buttons[r][c].mousePressed();
             }
           }
         }
-    } //END public void mousePressed()
-        /*
-        if(buttons[row][col].isFlagged()==true)
-          numMines--;
-              buttons[r-1][c-1].mousePressed();
-              buttons[r-1][c].mousePressed();
-              buttons[r-1][c+1].mousePressed();
-              
-              buttons[r][c-1].mousePressed();
-              buttons[r][c+1].mousePressed();
-              
-              buttons[r+1][c-1].mousePressed();
-              buttons[r+1][c].mousePressed();
-              buttons[r+1][c+1].mousePressed();
-          
-              if(blobs[r][c-1].isValid(r, c-1) == true && blobs[r][c-1].isMarked() == true){
-                blobs[r][c-1].mousePressed();
-            
-            
-            ->recursion to go all directions
-            ->chekc if valid first and unclicked??
-        */
- 
-    public void draw () 
-    {    
-        if (flagged)
-            fill(0);
-         else if( clicked && mines.contains(this) ) 
-             fill(255,0,0);
-        else if(clicked)
-            fill( 200 );
-        else 
-            fill( 100 );
+      }
+  } //end void mousePressed()
 
-        rect(x, y, width, height);
-        fill(0);
-        text(myLabel,x+width/2,y+height/2);
-    }
-    
-    public void setLabel(String newLabel)
-    {
-        myLabel = newLabel;
-    }
-    public void setLabel(int newLabel)
-    {
-        myLabel = ""+ newLabel;
-    }
-    public boolean isFlagged()
-    {
-        return flagged;
-    }
-}
+  public void draw () 
+  {    
+      if (flagged)
+        fill(74, 74, 67);
+        //fill(200);
+       else if(clicked && mines.contains(this)) 
+         fill(255,0,0);
+      else if(clicked)
+        fill(130, 112, 70);
+      else 
+        fill(59, 107, 68);
+
+      rect(x, y, width, height);
+      fill(0);
+      text(myLabel,x+width/2,y+height/2);
+  }
+  public void setLabel(String newLabel)
+  {
+      myLabel = newLabel;
+  }
+  public void setLabel(int newLabel)
+  {
+      myLabel = ""+ newLabel;
+  }
+  public boolean isFlagged()
+  {
+      return flagged;
+  }
+  public boolean isClicked(){
+    return clicked;
+  }
+} // end MSButton class
+
+/* - CALL ALL 8 RECURSIVELY
+if(isValid(myRow-1,myCol-1)&& buttons[myRow-1][myCol-1].clicked == false)
+  buttons[myRow-1][myCol-1].mousePressed();
+if(isValid(myRow-1,myCol) && buttons[myRow-1][myCol].clicked == false)
+  buttons[myRow-1][myCol].mousePressed();
+if(isValid(myRow-1,myCol+1) && buttons[myRow-1][myCol+1].clicked == false)
+  buttons[myRow-1][myCol+1].mousePressed();
+  
+if(isValid(myRow,myCol-1) && buttons[myRow][myCol-1].clicked == false)
+  buttons[myRow][myCol-1].mousePressed();
+if(isValid(myRow,myCol+1) && buttons[myRow][myCol-1].clicked == false)
+  buttons[myRow][myCol+1].mousePressed();
+  
+if(isValid(myRow+1,myCol-1) && buttons[myRow+1][myCol-1].clicked == false)
+  buttons[myRow+1][myCol-1].mousePressed();
+if(isValid(myRow+1,myCol) && buttons[myRow-1][myCol].clicked == false)
+  buttons[myRow+1][myCol].mousePressed();
+if(isValid(myRow+1,myCol+1) && buttons[myRow-1][myCol+1].clicked == false)
+  buttons[myRow+1][myCol+1].mousePressed();
+*/

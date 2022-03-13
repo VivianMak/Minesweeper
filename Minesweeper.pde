@@ -33,7 +33,7 @@ public void setMines()  //STEP #9
       if(!mines.contains(buttons[rRand][cRand])){
         mines.add(buttons[rRand][cRand]);
       }
-    System.out.println(rRand + " , " + cRand);
+    //System.out.println(rRand + " , " + cRand);
     }
 } //end void setMines()
 
